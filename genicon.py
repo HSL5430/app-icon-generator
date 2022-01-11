@@ -1,7 +1,8 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-icon_gen (https://github.com/aillieo/app-icon-generator)
+genicon (https://github.com/HSL5430/app-icon-generator),
+forked from (https://github.com/aillieo/app-icon-generator)
 Fast and easy way to generate icons for iOS and Android apps
 Created by Aillieo on 2017-08-10
 With Python 3.5
@@ -13,20 +14,25 @@ import os
 # output path and size config:
 path_iOS = ['Icon-57', 'Icon-114']
 size_iOS = [57, 114]
-path_Android = ['drawable-hdpi/icon', 'drawable-mdpi/icon']
-size_Android = [72, 48]
+path_Android = ['mipmap-xxxhdpi/ic_launcher', 'mipmap-xxhdpi/ic_launcher', 'mipmap-xhdpi/ic_launcher', 'mipmap-hdpi/ic_launcher', 'mipmap-mdpi/ic_launcher']
+size_Android = [192, 144, 96, 72, 48]
 path_custom = ['my_icon', 'your_icon']
 size_custom = [60, 100]
+outputs_dir = 'outputs/'
 
 # generate options and params:
 auto_overwrite = True
+
 gen_for_iOS = False
-gen_for_Android = False
-need_frame = True
+# 本人Android开发，所以这里默认True，可根据实际使用频率调整
+gen_for_Android = True
+
+need_frame = False
 frame_width_ratio = float(30) / 512
 frame_radius_ratio = float(90) / 512
 frame_color = (255, 255, 255)
-need_rounded = False
+
+need_rounded = True
 rounded_radius_ratio = float(90) / 512
 
 
@@ -69,7 +75,7 @@ def gen_template_img(ref_file):
 def gen_icons(template_img, dict_path_size):
     """generate icons by resizing template image according to sizes defined in size list"""
     for name, size in dict_path_size:
-        name = 'out/' + name + '.png'
+        name = outputs_dir + name + '.png'
         name = os.path.normpath(name)
         path, base = os.path.split(name)
         if path and not os.path.exists(path):
@@ -165,4 +171,4 @@ if __name__ == '__main__':
         print('Generating custom icons...')
         dict_custom = zip(path_custom, size_custom)
         gen_icons(img, dict_custom)
-    print('Finished icon generation!')
+    print('Generated icons in the dir: ' + os.path.abspath(outputs_dir))
