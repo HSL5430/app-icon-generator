@@ -21,7 +21,7 @@
 ## 自定义配置
 
 根据需要设置`path`和`size`，注意两个列表中的元素应一一对应
-如iOS的路径和图标尺寸可分别写成：
+如Android的路径和图标尺寸可分别写成：
 
 ```python
 path_Android = ['mipmap-xxxhdpi/ic_launcher', 'mipmap-xxhdpi/ic_launcher', 'mipmap-xhdpi/ic_launcher', 'mipmap-hdpi/ic_launcher', 'mipmap-mdpi/ic_launcher']
