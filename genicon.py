@@ -10,15 +10,45 @@ With Python 3.5
 
 from PIL import Image
 import os
+import sys
+
+
+def help():
+    print('Usage:')
+    print('1.get reference image by finding one image file in current directory or manually input, and then you will get the icons generated in the ./outputs directory.')
+    print('python %s' % sys.argv[0])
+    print('2.Support custom <input image path>, and then output to the ./outputs directory under the directory where the input image is located.')
+    print('python %s <input image path>' % sys.argv[0])
+    print('3.Support custom <outputs directory>.')
+    print('python %s <input image path> <outputs directory> ' % sys.argv[0])
+    print('In addition, you can read the README.md file!')
+
+
+def genLauncherIconForAndroid(iconDir):
+    return os.path.join(iconDir, 'ic_launcher')
+
 
 # output path and size config:
-path_iOS = ['Icon-57', 'Icon-114']
-size_iOS = [57, 114]
-path_Android = ['mipmap-xxxhdpi/ic_launcher', 'mipmap-xxhdpi/ic_launcher', 'mipmap-xhdpi/ic_launcher', 'mipmap-hdpi/ic_launcher', 'mipmap-mdpi/ic_launcher']
+path_Android = [
+    genLauncherIconForAndroid('mipmap-xxxhdpi'),
+    genLauncherIconForAndroid('mipmap-xxhdpi'),
+    genLauncherIconForAndroid('mipmap-xhdpi'),
+    genLauncherIconForAndroid('mipmap-hdpi'),
+    genLauncherIconForAndroid('mipmap-mdpi'),
+]
 size_Android = [192, 144, 96, 72, 48]
-path_custom = ['my_icon', 'your_icon']
+
+path_iOS = [
+    'Icon-57',
+    'Icon-114',
+]
+size_iOS = [57, 114]
+
+path_custom = [
+    'my_icon',
+    'your_icon',
+]
 size_custom = [60, 100]
-outputs_dir = 'outputs/'
 
 # generate options and params:
 auto_overwrite = True
@@ -36,20 +66,18 @@ need_rounded = True
 rounded_radius_ratio = float(90) / 512
 
 
-def tips_for_gen_options():
-    tips = """(You can customize the generate options and parameters in the script)"""
-    print(tips)
-
-
-def get_ref_file():
+def get_input_file():
     """get reference image by finding one image file in current directory or manually input"""
-    file_ext = ['png', 'jpg', 'jpeg']
-    files = os.listdir('.')
     ref_file = ''
-    for filename in files:
-        if filename.split('.')[-1].lower() in file_ext:
-            ref_file = filename
-            break
+    if len(sys.argv) > 1 and len(sys.argv[1]) > 0:
+        ref_file = sys.argv[1]
+    else:
+        file_ext = ['png', 'jpg', 'jpeg']
+        files = os.listdir('.')
+        for filename in files:
+            if filename.split('.')[-1].lower() in file_ext:
+                ref_file = filename
+                break
     if ref_file:
         print('Will use "%s" as reference image' % ref_file)
     else:
@@ -58,6 +86,15 @@ def get_ref_file():
     if not os.path.exists(ref_file):
         raise IOError('file not found: ' + ref_file)
     return ref_file
+
+
+def get_outputs_dir(ref_file):
+    outputs = ''
+    if len(sys.argv) > 2 and len(sys.argv[2]) > 0:
+        outputs = sys.argv[2]
+    else:
+        outputs = os.path.join(os.path.dirname(ref_file), "outputs")
+    return outputs
 
 
 def gen_template_img(ref_file):
@@ -72,10 +109,10 @@ def gen_template_img(ref_file):
     return template_img
 
 
-def gen_icons(template_img, dict_path_size):
+def gen_icons(ref_file, template_img, dict_path_size):
     """generate icons by resizing template image according to sizes defined in size list"""
     for name, size in dict_path_size:
-        name = outputs_dir + name + '.png'
+        name = os.path.join(get_outputs_dir(ref_file), name + '.png')
         name = os.path.normpath(name)
         path, base = os.path.split(name)
         if path and not os.path.exists(path):
@@ -140,7 +177,7 @@ def in_corner(size, radius, x, y, base_offset=0):
         center = (size - radius, size - radius)
 
     if center != (0, 0):
-        if (x - center[0]) ** 2 + (y - center[1]) ** 2 > radius ** 2:
+        if (x - center[0])**2 + (y - center[1])**2 > radius**2:
             return True
     return False
 
@@ -155,20 +192,24 @@ def in_frame(size, width, radius, x, y):
 
 
 if __name__ == '__main__':
-    file = get_ref_file()
-    tips_for_gen_options()
-    img = gen_template_img(file)
+    if len(sys.argv) > 1:
+        arg1 = sys.argv[1].lower()
+        if "help" == arg1 or "h" == arg1:
+            help()
+            exit()
 
+    ref_file = get_input_file()
+    img = gen_template_img(ref_file)
     if gen_for_iOS:
         print('Generating for iOS...')
         dict_iOS = zip(path_iOS, size_iOS)
-        gen_icons(img, dict_iOS)
+        gen_icons(ref_file, img, dict_iOS)
     if gen_for_Android:
         print('Generating for Android...')
         dict_Android = zip(path_Android, size_Android)
-        gen_icons(img, dict_Android)
+        gen_icons(ref_file, img, dict_Android)
     if not gen_for_iOS and not gen_for_Android:
         print('Generating custom icons...')
         dict_custom = zip(path_custom, size_custom)
-        gen_icons(img, dict_custom)
-    print('Generated icons in the dir: ' + os.path.abspath(outputs_dir))
+        gen_icons(ref_file, img, dict_custom)
+    print('Generated icons in the dir: ' + os.path.abspath(get_outputs_dir(ref_file)))

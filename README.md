@@ -1,16 +1,22 @@
-# 方便快捷地生成iOS和安卓应用图标
+# 方便快捷地生成iOS和Android应用图标
 
 ## 使用方法
 
-把用于生成图标的原始图片文件与`genicon.py`放置于同一目录下，运行脚本，即可生成图标文件。生成图标时，可以为图标加圆角或加单色的边框。以下是一个示例，左侧是原始图片，右侧是生成的图标。
+- 把用于生成图标的原始图片文件与`genicon.py`放置于同一目录下，运行脚本`python ./genicon.py`，即可生成图标文件，输出到`./outputs`目录下。
+- 支持自定义传参图片路径，`python ./genicon.py <图片路径>`，输出到图片所在目录下的`./outputs`目录下。
+- 支持自定义传参输出目录，`python ./genicon.py <图片路径> <输出目录>`。
+
+此外，你还可以运行脚本`python ./genicon.py help`或者`python ./genicon.py h`来查看使用方法。
+
+生成图标时，可以为图标加圆角或加单色的边框。以下是一个示例，左侧是原始图片，右侧是生成的图标。
 
 ![example_img](example.png)
 
 
 ## 运行需要
 
-Python 3.x
-Pillow
+- Python 3.x
+- Pillow: `pip install pillow`
 
 ## 自定义配置
 
@@ -44,15 +50,21 @@ size_Android = [192, 144, 96, 72, 48]
 
 ## Usage
 
-Put the original image you use to generate icons and the script `genicon.py` in the same directory, run the script and then you will get the icons generated. When generating you can add round corners or a simple frame for the them. The following figure demonstrates an example: on the left side is the original image while on the right side are the generated ones.
+- Put the original image you use to generate icons and the script `genicon.py` in the same directory, run the script(`python ./genicon.py`) and then you will get the icons generated in the `./outputs` directory. 
+- Support custom input image path, run `python ./genicon.py <input image path>`, and then output to the `./outputs` directory under the directory where the input image is located.
+- Support custom outputs directory, run `python ./genicon.py <input image path> <outputs directory>`.
+
+In addition, you can run the script(`python ./genicon.py help` or `python ./genicon.py h`) to help you to learn how to use this.
+
+When generating you can add round corners or a simple frame for the them. The following figure demonstrates an example: on the left side is the original image while on the right side are the generated ones.
 
 ![example_img](example.png)
 
 
 ## Requirement
 
-Python 3.x
-Pillow: `pip install pillow`
+- Python 3.x
+- Pillow: `pip install pillow`
 
 ## Customize
 
